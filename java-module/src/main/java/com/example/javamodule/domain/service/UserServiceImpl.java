@@ -2,6 +2,8 @@ package com.example.javamodule.domain.service;
 
 import com.example.javamodule.domain.entity.User;
 import com.example.javamodule.domain.repository.UserRepository;
+import com.example.javamodule.infrastructure.exceptions.custom.NotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
@@ -24,7 +27,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username).orElseThrow(RuntimeException::new);
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException("user: " + username + " does not exist"));
+        log.error("user with username: {} does not exist", username);
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         user.getRoles().stream().map((role) -> authorities.add(new SimpleGrantedAuthority(role.getRoleName())));
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);

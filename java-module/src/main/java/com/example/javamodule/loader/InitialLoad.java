@@ -27,8 +27,16 @@ public class InitialLoad implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        Language language = new Language(null, "English", "Hello World");
-        languageRepository.save(language);
+        languageRepository.save(new Language.Builder().createLanguage("en").createValue("Hello World").build());
+        languageRepository.save(new Language.Builder().createLanguage("gr").createValue("Hallo Welt").build());
+        languageRepository.save(new Language.Builder().createLanguage("srb").createValue("Zdravo svete").build());
+        languageRepository.save(new Language.Builder().createLanguage("por").createValue("Olá Mundo").build());
+        languageRepository.save(new Language.Builder().createLanguage("sp").createValue("Hola Mundo").build());
+        languageRepository.save(new Language.Builder().createLanguage("swe").createValue("Hej världen").build());
+        languageRepository.save(new Language.Builder().createLanguage("tur").createValue("Selam Dünya").build());
+        languageRepository.save(new Language.Builder().createLanguage("bos").createValue("Pozdrav svijete").build());
+        languageRepository.save(new Language.Builder().createLanguage("ita").createValue("Ciao mondo").build());
+        languageRepository.save(new Language.Builder().createLanguage("mcd").createValue("Zdravo svete").build());
 
         User user = new User();
         Role role = new Role();
