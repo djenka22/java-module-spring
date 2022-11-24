@@ -28,6 +28,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private UserServiceImpl userService;
     @Autowired
     private PasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    private CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
+    @Autowired
+    private CustomAccessDeniedHandler customAccessDeniedHandler;
+    @Autowired
+    private CustomAuthenticationEntryPoint unauthorizedHandler;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -53,6 +59,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(GET, "/api/hello/").permitAll()
                 .antMatchers(POST, "/api/hello/").hasAuthority("ADMIN")
                 .anyRequest().authenticated();
+        http
+               // .formLogin().failureHandler(customAuthenticationFailureHandler);
+                .exceptionHandling()
+                .authenticationEntryPoint(unauthorizedHandler)
+                .accessDeniedHandler(customAccessDeniedHandler);
 
         http.addFilter(customAuthenticationFilter);
         http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);

@@ -46,11 +46,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         String password = request.getParameter("password");
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(username, password);
-        try {
-            return authenticationManager.authenticate(authenticationToken);
-        } catch (Exception e) {
-            throw new NotFoundException("no such user");
-        }
+        return authenticationManager.authenticate(authenticationToken);
     }
 
     @Override

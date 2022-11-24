@@ -16,11 +16,4 @@ public class WebController {
         return "index";
     }
 
-    @PostMapping("/create-language-pair")
-    @ResponseBody
-    public String createHello() {
-        return "Hello World";
-    }
-
-
 }
