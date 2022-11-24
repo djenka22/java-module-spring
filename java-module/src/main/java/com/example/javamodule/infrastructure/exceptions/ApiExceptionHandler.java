@@ -21,6 +21,7 @@ import java.time.ZonedDateTime;
 
 
 @Slf4j
+@ControllerAdvice
 public class ApiExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
