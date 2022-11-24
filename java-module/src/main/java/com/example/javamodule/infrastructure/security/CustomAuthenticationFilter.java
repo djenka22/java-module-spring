@@ -2,9 +2,14 @@ package com.example.javamodule.infrastructure.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.example.javamodule.infrastructure.exceptions.custom.NotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -24,6 +29,7 @@ import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+@Slf4j
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
 
@@ -33,14 +39,18 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     }
 
 
+    @SneakyThrows
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(username, password);
-        return authenticationManager.authenticate(authenticationToken);
-
+        try {
+            return authenticationManager.authenticate(authenticationToken);
+        } catch (Exception e) {
+            throw new NotFoundException("no such user");
+        }
     }
 
     @Override

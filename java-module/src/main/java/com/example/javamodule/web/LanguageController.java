@@ -1,15 +1,16 @@
 package com.example.javamodule.web;
 
+import com.example.javamodule.domain.entity.Language;
 import com.example.javamodule.domain.service.LanguageService;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 @RestController
-@RequestMapping("/api")
 public class LanguageController {
     private final LanguageService service;
 
@@ -24,9 +25,34 @@ public class LanguageController {
         return ResponseEntity.ok("Hello world");
     }
 
-    @GetMapping("/hello")
+    @GetMapping("/api/hello")
     public ResponseEntity<?> findHelloWorld(@RequestParam String language) {
         String value = service.findHelloWorld(language);
         return ResponseEntity.ok(value);
     }
+
+    @PostMapping("/api/hello")
+    public ResponseEntity<?> createLanguagePair(@RequestBody Pair pair) {
+        Language language = service.saveNewPair(pair.language, pair.value);
+        return ResponseEntity.ok(language);
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    static class Pair {
+        String language;
+        String value;
+    }
+
+    /*
+
+    @GetMapping
+    public ModelAndView index() {
+        ModelAndView modelAndView= new ModelAndView();
+        modelAndView.setViewName("index");
+        return modelAndView;
+    }
+
+    */
 }

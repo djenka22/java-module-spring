@@ -11,15 +11,13 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import java.util.Arrays;
+
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
 
 @EnableWebMvc
 @Configuration
@@ -31,16 +29,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private PasswordEncoder bCryptPasswordEncoder;
 
-
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
                 .userDetailsService(userService)
                 .passwordEncoder(bCryptPasswordEncoder);
     }
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBean());
+        customAuthenticationFilter.setFilterProcessesUrl("/secure/hello");
         http
                 .csrf().disable().cors().and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -50,13 +48,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .headers().frameOptions().disable();
         http
                 .authorizeRequests()
-                .antMatchers("/login/**","/actuator/**","/h2-console/**","/swagger-ui/**","/v3/api-docs/**").permitAll();
+                .antMatchers("/secure/hello", "/actuator/**","/h2-console/**","/swagger-ui/**","/v3/api-docs/**", "/api/hello-rest", "/").permitAll()
+                .antMatchers(GET, "/hello/**").permitAll()
+                .antMatchers(GET, "/api/hello/").permitAll()
+                .antMatchers(POST, "/api/hello/").hasAuthority("ADMIN")
+                .anyRequest().authenticated();
 
-        http.addFilter(new CustomAuthenticationFilter(authenticationManagerBean()));
+        http.addFilter(customAuthenticationFilter);
         http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
-    @Bean
+    /*@Bean
     CorsConfigurationSource corsConfigurationSource() {
         UrlBasedCorsConfigurationSource source =
                 new UrlBasedCorsConfigurationSource();
@@ -70,6 +72,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         source.registerCorsConfiguration("/**", config);
         return source;
     }
+
+     */
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {

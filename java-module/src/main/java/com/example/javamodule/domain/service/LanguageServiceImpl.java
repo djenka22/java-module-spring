@@ -1,6 +1,8 @@
 package com.example.javamodule.domain.service;
 
+import com.example.javamodule.domain.entity.Language;
 import com.example.javamodule.domain.repository.LanguageRepository;
+import com.example.javamodule.infrastructure.exceptions.custom.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +16,13 @@ public class LanguageServiceImpl implements LanguageService {
     }
 
     @Override
-    public String findHelloWorld(String language) {
-        return repository.findByLanguage(language);
+    public String findHelloWorld(String lang) {
+        Language language = repository.findByLanguage(lang).orElseThrow(() -> new NotFoundException("language not found"));
+        return language.getValue();
+    }
+
+    @Override
+    public Language saveNewPair(String language, String value) {
+        return repository.save(new Language.Builder().createLanguage(language).createValue(value).build());
     }
 }

@@ -4,15 +4,23 @@ import com.example.javamodule.infrastructure.exceptions.custom.NotFoundException
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-@ControllerAdvice
+
+@Slf4j
 public class ApiExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
