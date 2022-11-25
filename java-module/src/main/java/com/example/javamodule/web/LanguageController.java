@@ -31,20 +31,6 @@ public class LanguageController {
         return ResponseEntity.ok(value);
     }
 
-    @PostMapping("/api/hello")
-    public ResponseEntity<?> createLanguagePair(@RequestBody Pair pair) {
-        Language language = service.saveNewPair(pair.language, pair.value);
-        return ResponseEntity.ok(language);
-    }
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    static class Pair {
-        String language;
-        String value;
-    }
-
     /*
 
     @GetMapping
