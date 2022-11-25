@@ -54,7 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .headers().frameOptions().disable();
         http
                 .authorizeRequests()
-                .antMatchers("/secure/hello", "/actuator/**","/h2-console/**","/swagger-ui/**","/v3/api-docs/**", "/api/hello-rest", "/").permitAll()
+                .antMatchers("/secure/hello", "/actuator/**","/h2-console/**","/swagger-ui/**","/v3/api-docs/**", "/api/hello-rest", "/api/translate").permitAll()
                 .antMatchers(GET, "/hello/**").permitAll()
                 .antMatchers(GET, "/api/hello/").permitAll()
                 .antMatchers(POST, "/api/hello/").hasAuthority("ADMIN")

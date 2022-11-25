@@ -46,9 +46,9 @@ public class LanguageController {
         String value;
     }
 
-    @PostMapping("api/call-another")
-    public ResponseEntity<?> callAnotherApi(@RequestBody Map<String, String> pair) {
-        return ResponseEntity.ok(service.callAnotherApi(pair.get("text"), pair.get("language")));
+    @PostMapping("api/translate")
+    public ResponseEntity<?> callAnotherApi(@RequestBody Pair pair) {
+        return ResponseEntity.ok(service.callAnotherApi(pair.value, pair.language));
     }
 
     /*
