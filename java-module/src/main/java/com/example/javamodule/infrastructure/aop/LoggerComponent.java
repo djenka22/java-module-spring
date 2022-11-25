@@ -30,7 +30,7 @@ public class LoggerComponent {
     public Object logArroundExec(ProceedingJoinPoint pjp) {
         log.info("before {}", constructLogMsg(pjp));
         var proceed = pjp.proceed();
-        log.info("after {} wiht result: {}",constructLogMsg(pjp), proceed.toString());
+        log.info("after {} with result: {}",constructLogMsg(pjp), proceed.toString());
         return proceed;
     }
 

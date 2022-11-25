@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Map;
+
 @RestController
 public class LanguageController {
     private final LanguageService service;
@@ -29,6 +31,24 @@ public class LanguageController {
     public ResponseEntity<?> findHelloWorld(@RequestParam String language) {
         String value = service.findHelloWorld(language);
         return ResponseEntity.ok(value);
+    }
+    @PostMapping("/hello")
+    public ResponseEntity<?> createLanguagePair(@RequestBody Pair pair) {
+        Language language = service.saveNewPair(pair.language, pair.value);
+        return ResponseEntity.ok(language);
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    static class Pair {
+        String language;
+        String value;
+    }
+
+    @PostMapping("api/call-another")
+    public ResponseEntity<?> callAnotherApi(@RequestBody Map<String, String> pair) {
+        return ResponseEntity.ok(service.callAnotherApi(pair.get("text"), pair.get("language")));
     }
 
     /*
